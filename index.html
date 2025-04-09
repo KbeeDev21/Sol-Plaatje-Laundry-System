@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/x-icon" href="Res Logo.jpeg">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
+  <!-- SweetAlert2 -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+  <title>Laundry Booking System</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+    form {
+      background: white; padding: 20px; border-radius: 10px;
+      max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      width: 100%; padding: 10px; margin: 8px 0;
+    }
+    .navbar-light .navbar-nav .nav-link {
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg fixed-top bg-light navbar-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img id="MDB-logo" src="Res Logo.jpeg" alt="MDB Logo" draggable="false" height="30" />
+      </a>
+      
+      
+    </div>
+  </nav>
+
+  <h2 style="text-align:center">Laundry Booking System</h2>
+
+  <form id="bookingForm">
+    <label>Name & Surname:</label>
+    <input type="text" id="fullname" required>
+
+    <label>Student Number:</label>
+    <input type="text" id="studentNumber" required>
+
+    <label>Room Number (F201A):</label>
+    <input type="text" id="roomNumber" required>
+
+    <label>Choose Day:</label>
+    <select id="day" required>
+      <option value="">-- Select Day --</option>
+      <option value="Monday">Monday</option>
+      <option value="Wednesday">Wednesday</option>
+      <option value="Friday">Friday</option>
+    </select>
+
+    <label>Choose Time Slot:</label>
+    <select id="timeSlot" required>
+      <option value="">-- Select Slot --</option>
+      <option value="16:00 - 18:00">16:00 - 18:00</option>
+      <option value="18:00 - 20:00">18:00 - 20:00</option>
+      <option value="20:00 - 22:00">20:00 - 22:00</option>
+      <option value="22:00 - 00:00">22:00 - 00:00</option>
+    </select>
+
+    <button type="submit">Book Slot</button>
+  </form>
+
+  <script>
+    const webAppUrl = "https://script.google.com/macros/s/AKfycby0BBqu0kQ3Oh2ZdMjHTmJ6DfKpAP6rUwYf-XFwZbVYweadk6yEIqnhdf8XFy-RwdNy/exec"; // Replace with actual URL
+
+    const allSlots = [
+      "16:00 - 18:00",
+      "18:00 - 20:00",
+      "20:00 - 22:00",
+      "22:00 - 00:00"
+    ];
+
+    const daySelect = document.getElementById("day");
+    const timeSlotSelect = document.getElementById("timeSlot");
+
+    let bookingCounts = {};
+
+    async function fetchBookedSlots() {
+      const res = await fetch(webAppUrl);
+      bookingCounts = await res.json();
+    }
+
+    async function updateSlots() {
+      await fetchBookedSlots();
+      const selectedDay = daySelect.value;
+
+      timeSlotSelect.innerHTML = '<option value="">-- Select Slot --</option>';
+
+      allSlots.forEach(slot => {
+        const key = `${selectedDay}|${slot}`;
+        const count = bookingCounts[key] || 0;
+        if (count < 2) {
+          const opt = document.createElement("option");
+          opt.value = slot;
+          opt.textContent = slot;
+          timeSlotSelect.appendChild(opt);
+        }
+      });
+    }
+
+    daySelect.addEventListener("change", updateSlots);
+
+    document.getElementById("bookingForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const data = {
+        fullname: document.getElementById("fullname").value,
+        studentNumber: document.getElementById("studentNumber").value,
+        roomNumber: document.getElementById("roomNumber").value,
+        day: daySelect.value,
+        slot: timeSlotSelect.value
+      };
+
+      try {
+        const res = await fetch(webAppUrl, {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: { "Content-Type": "application/json" }
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to submit the form. Please check the Google Apps Script.');
+        }
+
+        const result = await res.json();
+        if (result.success) {
+          // Display SweetAlert on successful booking
+          Swal.fire({
+            title: 'Success!',
+            text: 'Slot Booked',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          });
+
+          this.reset(); // Reset the form after success
+        } else {
+          Swal.fire({
+            title: 'Error!',
+            text: result.message || "Something went wrong!",
+            icon: 'error',
+            confirmButtonText: 'Ok'
+          });
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        Swal.fire({
+          title: 'Error!',
+          text: 'Error submitting form: ' + error.message,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
