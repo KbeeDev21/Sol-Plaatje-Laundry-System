@@ -2,42 +2,152 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/x-icon" href="Res Logo.jpeg">
-  <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
-  <!-- SweetAlert2 -->
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
   <title>Laundry Booking System</title>
   <style>
-    body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+    body {
+      font-family: Arial;
+      padding: 20px;
+      background: url('faded.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      background-color: rgba(248, 249, 250, 0.4);
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .view-bookings-btn {
+      padding: 8px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .view-bookings-btn:hover {
+      background-color: #0056b3;
+    }
+
     form {
-      background: white; padding: 20px; border-radius: 10px;
-      max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+
     input, select, button {
-      width: 100%; padding: 10px; margin: 8px 0;
+      width: calc(100% - 12px);
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
-    .navbar-light .navbar-nav .nav-link {
-      color: #000;
+
+    h2 {
+      text-align: center;
+      color: white;
+      text-shadow: 1px 1px 3px black;
     }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    table th, table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+      background-color: #f4f4f4;
+    }
+
+    .delete-btn {
+      cursor: pointer;
+      color: red;
+      font-size: 18px;
+    }
+
+    .primary-btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .primary-btn:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  form {
+    width: 100%;
+    padding: 15px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  table th, table td {
+    padding: 8px;
+  }
+
+  .view-bookings-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  input, select, button {
+    width: 100%;
+  }
+}
+
   </style>
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg fixed-top bg-light navbar-light">
-    <div class="container">
-      <a class="navbar-brand" href="#">
-        <img id="MDB-logo" src="Res Logo.jpeg" alt="MDB Logo" draggable="false" height="30" />
-      </a>
-      
-      
+  <nav class="navbar">
+    <div>
+      <img src="Res Logo.jpeg" alt="Logo" height="30" />
+    </div>
+    <div>
+      <button class="view-bookings-btn" onclick="viewBookings()">View Bookings</button>
     </div>
   </nav>
 
-  <h2 style="text-align:center">Laundry Booking System</h2>
+  <h2>F-Block Laundry Booking System</h2>
 
   <form id="bookingForm">
     <label>Name & Surname:</label>
@@ -66,12 +176,11 @@
       <option value="22:00 - 00:00">22:00 - 00:00</option>
     </select>
 
-    <button type="submit">Book Slot</button>
+    <button type="submit" class="primary-btn">Book Slot</button>
   </form>
 
   <script>
-    const webAppUrl = "https://script.google.com/macros/s/AKfycby0BBqu0kQ3Oh2ZdMjHTmJ6DfKpAP6rUwYf-XFwZbVYweadk6yEIqnhdf8XFy-RwdNy/exec"; // Replace with actual URL
-
+    const sheetDbApi = "https://sheetdb.io/api/v1/wdh43sgcl5wtt";
     const allSlots = [
       "16:00 - 18:00",
       "18:00 - 20:00",
@@ -79,22 +188,25 @@
       "22:00 - 00:00"
     ];
 
+    const allowedStudentNumbers = ["224032194", "202300002", "202300003", "202399999"];
     const daySelect = document.getElementById("day");
     const timeSlotSelect = document.getElementById("timeSlot");
-
     let bookingCounts = {};
 
     async function fetchBookedSlots() {
-      const res = await fetch(webAppUrl);
-      bookingCounts = await res.json();
+      const res = await fetch(sheetDbApi);
+      const data = await res.json();
+      bookingCounts = {};
+      data.forEach(entry => {
+        const key = `${entry.day}|${entry.slot}`;
+        bookingCounts[key] = (bookingCounts[key] || 0) + 1;
+      });
     }
 
     async function updateSlots() {
       await fetchBookedSlots();
       const selectedDay = daySelect.value;
-
       timeSlotSelect.innerHTML = '<option value="">-- Select Slot --</option>';
-
       allSlots.forEach(slot => {
         const key = `${selectedDay}|${slot}`;
         const count = bookingCounts[key] || 0;
@@ -111,56 +223,162 @@
 
     document.getElementById("bookingForm").addEventListener("submit", async function(e) {
       e.preventDefault();
+      const studentNumberInput = document.getElementById("studentNumber").value.trim();
 
-      const data = {
-        fullname: document.getElementById("fullname").value,
-        studentNumber: document.getElementById("studentNumber").value,
-        roomNumber: document.getElementById("roomNumber").value,
-        day: daySelect.value,
-        slot: timeSlotSelect.value
-      };
+      if (!allowedStudentNumbers.includes(studentNumberInput)) {
+        Swal.fire({ title: 'Unauthorized', text: 'This student number is not eligible.', icon: 'error' });
+        return;
+      }
 
       try {
-        const res = await fetch(webAppUrl, {
+        const existing = await fetch(`${sheetDbApi}?cache=false`);
+        const bookings = await existing.json();
+
+        const alreadyBooked = bookings.some(b => b.studentNumber === studentNumberInput);
+        if (alreadyBooked) {
+          Swal.fire({ title: 'Already Booked', text: 'You have already booked a slot this week.', icon: 'warning' });
+          return;
+        }
+
+        const data = {
+          id: Date.now().toString(),
+          fullname: document.getElementById("fullname").value,
+          studentNumber: studentNumberInput,
+          roomNumber: document.getElementById("roomNumber").value,
+          day: daySelect.value,
+          slot: timeSlotSelect.value
+        };
+
+        const res = await fetch(sheetDbApi, {
           method: "POST",
           body: JSON.stringify(data),
           headers: { "Content-Type": "application/json" }
         });
 
-        if (!res.ok) {
-          throw new Error('Failed to submit the form. Please check the Google Apps Script.');
-        }
+        if (!res.ok) throw new Error('Failed to submit the form.');
 
-        const result = await res.json();
-        if (result.success) {
-          // Display SweetAlert on successful booking
-          Swal.fire({
-            title: 'Success!',
-            text: 'Slot Booked',
-            icon: 'success',
-            confirmButtonText: 'Ok'
-          });
+        Swal.fire({ title: 'Success!', text: 'Slot Booked', icon: 'success' });
+        this.reset();
+        updateSlots();
 
-          this.reset(); // Reset the form after success
-        } else {
-          Swal.fire({
-            title: 'Error!',
-            text: result.message || "Something went wrong!",
-            icon: 'error',
-            confirmButtonText: 'Ok'
-          });
-        }
       } catch (error) {
         console.error('Error submitting form:', error);
-        Swal.fire({
-          title: 'Error!',
-          text: 'Error submitting form: ' + error.message,
-          icon: 'error',
-          confirmButtonText: 'Ok'
-        });
+        Swal.fire({ title: 'Error!', text: error.message, icon: 'error' });
       }
     });
-  </script>
 
+    async function viewBookings() {
+      try {
+        const res = await fetch(sheetDbApi);
+        const bookings = await res.json();
+
+        const grouped = {};
+        const timeOrder = {
+          "16:00 - 18:00": 0,
+          "18:00 - 20:00": 1,
+          "20:00 - 22:00": 2,
+          "22:00 - 00:00": 3
+        };
+
+        bookings.forEach(b => {
+          if (!grouped[b.day]) grouped[b.day] = [];
+          grouped[b.day].push(b);
+        });
+
+        Object.keys(grouped).forEach(day => {
+          grouped[day].sort((a, b) => timeOrder[a.slot] - timeOrder[b.slot]);
+        });
+
+        let tableContent = "";
+        Object.keys(grouped).forEach(day => {
+          tableContent += `<tr><th colspan="5" style="background:#e9ecef">${day}</th></tr>`;
+          grouped[day].forEach(b => {
+            tableContent += `
+              <tr>
+                <td>${b.fullname}</td>
+                <td>${b.roomNumber}</td>
+                <td>${b.slot}</td>
+               <td><span class="delete-btn" onclick="deleteBooking('${b.studentNumber}')"><i class="fas fa-trash"></i></span></td>
+
+
+              </tr>`;
+          });
+        });
+
+        const tableHtml = `
+  <div style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Room</th>
+          <th>Slot</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${tableContent || "<tr><td colspan='4'>No bookings yet.</td></tr>"}
+      </tbody>
+    </table>
+  </div>`;
+
+
+        Swal.fire({ title: 'All Bookings', html: tableHtml, width: 800 });
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+        Swal.fire({ title: 'Error!', text: error.message, icon: 'error' });
+      }
+    }
+
+    async function deleteBooking(studentNumberFromSheet) {
+  const { value: studentNumberInput } = await Swal.fire({
+    title: 'Confirm Your Booking',
+    input: 'text',
+    inputLabel: 'Enter your Student Number to confirm deletion',
+    inputPlaceholder: 'e.g., 202300001',
+    inputAttributes: {
+      maxlength: 10,
+      autocapitalize: 'off',
+      autocorrect: 'off'
+    },
+    showCancelButton: true,
+    confirmButtonText: 'Delete',
+    cancelButtonText: 'Cancel'
+  });
+
+  if (studentNumberInput === studentNumberFromSheet) {
+    try {
+      await fetch(`${sheetDbApi}/studentNumber/${studentNumberFromSheet}`, {
+        method: "DELETE",
+      });
+
+      Swal.fire({
+        title: 'Deleted!',
+        text: 'Booking has been removed.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+
+      viewBookings(); // Refresh the list
+    } catch (error) {
+      console.error('Error deleting booking:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Error deleting booking: ' + error.message,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
+  } else if (studentNumberInput) {
+    Swal.fire({
+      title: 'Incorrect!',
+      text: 'Student number does not match. Cannot delete booking.',
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
+  }
+}
+
+  </script>
 </body>
 </html>
