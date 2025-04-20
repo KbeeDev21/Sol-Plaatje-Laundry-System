@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="icon" type="image/x-icon" href="Res Logo.jpeg">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
@@ -102,38 +102,37 @@
     }
 
     @media (max-width: 768px) {
-  body {
-    padding: 10px;
-  }
+      body {
+        padding: 10px;
+      }
 
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
-  form {
-    width: 100%;
-    padding: 15px;
-  }
+      form {
+        width: 100%;
+        padding: 15px;
+      }
 
-  table {
-    font-size: 14px;
-  }
+      table {
+        font-size: 14px;
+      }
 
-  table th, table td {
-    padding: 8px;
-  }
+      table th, table td {
+        padding: 8px;
+      }
 
-  .view-bookings-btn {
-    width: 100%;
-    margin-top: 10px;
-  }
+      .view-bookings-btn {
+        width: 100%;
+        margin-top: 10px;
+      }
 
-  input, select, button {
-    width: 100%;
-  }
-}
-
+      input, select, button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -181,14 +180,8 @@
 
   <script>
     const sheetDbApi = "https://sheetdb.io/api/v1/wdh43sgcl5wtt";
-    const allSlots = [
-      "16:00 - 18:00",
-      "18:00 - 20:00",
-      "20:00 - 22:00",
-      "22:00 - 00:00"
-    ];
+   
 
-    const allowedStudentNumbers = ["224032194", "202300002", "202300003", "202399999"];
     const daySelect = document.getElementById("day");
     const timeSlotSelect = document.getElementById("timeSlot");
     let bookingCounts = {};
@@ -223,14 +216,34 @@
 
     document.getElementById("bookingForm").addEventListener("submit", async function(e) {
       e.preventDefault();
+
       const studentNumberInput = document.getElementById("studentNumber").value.trim();
 
-      if (!allowedStudentNumbers.includes(studentNumberInput)) {
-        Swal.fire({ title: 'Unauthorized', text: 'F-Block Laundry is to be used only by F-Block & D-Block(Ground & 1st) Residents.', icon: 'error' });
-        return;
-      }
+      // Show loading indicator
+      Swal.fire({
+        title: 'Booking...',
+        text: 'Please wait while we process your booking.',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
 
       try {
+        const allowedRes = await fetch(`${sheetDbApi}?sheet=AllowedUsers`);
+        const allowedData = await allowedRes.json();
+        const allowedStudentNumbers = allowedData.map(entry => entry.StudentNumbers.trim());
+
+        if (!allowedStudentNumbers.includes(studentNumberInput)) {
+          Swal.fire({
+            title: 'Unauthorized',
+            text: 'F-Block Laundry is for F-Block & D-Block (Ground & 1st) Residents only.',
+            icon: 'error'
+          });
+          return;
+        }
+
         const existing = await fetch(`${sheetDbApi}?cache=false`);
         const bookings = await existing.json();
 
@@ -257,7 +270,13 @@
 
         if (!res.ok) throw new Error('Failed to submit the form.');
 
-        Swal.fire({ title: 'Success!', text: 'Slot Booked', icon: 'success' });
+        // Show success message
+        Swal.fire({
+          title: 'Success!',
+          text: 'Slot Booked',
+          icon: 'success'
+        });
+
         this.reset();
         updateSlots();
 
@@ -268,6 +287,17 @@
     });
 
     async function viewBookings() {
+      // Show loading indicator
+      Swal.fire({
+        title: 'Loading Bookings...',
+        text: 'Fetching the latest booking data.',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
       try {
         const res = await fetch(sheetDbApi);
         const bookings = await res.json();
@@ -298,30 +328,27 @@
                 <td>${b.fullname}</td>
                 <td>${b.roomNumber}</td>
                 <td>${b.slot}</td>
-               <td><span class="delete-btn" onclick="deleteBooking('${b.studentNumber}')"><i class="fas fa-trash"></i></span></td>
-
-
+                <td><span class="delete-btn" onclick="deleteBooking('${b.studentNumber}')"><i class="fas fa-trash"></i></span></td>
               </tr>`;
           });
         });
 
         const tableHtml = `
-  <div style="overflow-x: auto;">
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Room</th>
-          <th>Slot</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${tableContent || "<tr><td colspan='4'>No bookings yet.</td></tr>"}
-      </tbody>
-    </table>
-  </div>`;
-
+          <div style="overflow-x: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Room</th>
+                  <th>Slot</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${tableContent || "<tr><td colspan='4'>No bookings yet.</td></tr>"}
+              </tbody>
+            </table>
+          </div>`;
 
         Swal.fire({ title: 'All Bookings', html: tableHtml, width: 800 });
       } catch (error) {
@@ -331,54 +358,58 @@
     }
 
     async function deleteBooking(studentNumberFromSheet) {
-  const { value: studentNumberInput } = await Swal.fire({
-    title: 'Confirm Your Booking',
-    input: 'text',
-    inputLabel: 'Enter your Student Number to confirm deletion',
-    inputPlaceholder: 'e.g., 202300001',
-    inputAttributes: {
-      maxlength: 10,
-      autocapitalize: 'off',
-      autocorrect: 'off'
-    },
-    showCancelButton: true,
-    confirmButtonText: 'Delete',
-    cancelButtonText: 'Cancel'
-  });
-
-  if (studentNumberInput === studentNumberFromSheet) {
-    try {
-      await fetch(`${sheetDbApi}/studentNumber/${studentNumberFromSheet}`, {
-        method: "DELETE",
+      const { value: studentNumberInput } = await Swal.fire({
+        title: 'Confirm Your Booking',
+        input: 'text',
+        inputLabel: 'Enter your Student Number to confirm deletion',
+        inputPlaceholder: 'e.g. 202300001',
+        inputAttributes: {
+          maxlength: 10,
+          autocapitalize: 'off',
+          autocorrect: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel'
       });
 
-      Swal.fire({
-        title: 'Deleted!',
-        text: 'Booking has been removed.',
-        icon: 'success',
-        confirmButtonText: 'OK'
-      });
+      if (studentNumberInput === studentNumberFromSheet) {
+        // Show loading indicator for deletion
+        Swal.fire({
+          title: 'Deleting...',
+          text: 'Please wait while we delete your booking.',
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
 
-      viewBookings(); // Refresh the list
-    } catch (error) {
-      console.error('Error deleting booking:', error);
-      Swal.fire({
-        title: 'Error!',
-        text: 'Error deleting booking: ' + error.message,
-        icon: 'error',
-        confirmButtonText: 'OK'
-      });
+        try {
+          await fetch(`${sheetDbApi}/studentNumber/${studentNumberFromSheet}`, {
+            method: "DELETE",
+          });
+
+          Swal.fire({
+            title: 'Deleted!',
+            text: 'Booking has been removed.',
+            icon: 'success'
+          });
+
+          viewBookings();
+        } catch (error) {
+          console.error('Error deleting booking:', error);
+          Swal.fire({ title: 'Error!', text: error.message, icon: 'error' });
+        }
+      } else if (studentNumberInput) {
+        Swal.fire({
+          title: 'Incorrect!',
+          text: 'Student number does not match. Cannot delete booking.',
+          icon: 'error'
+        });
+      }
     }
-  } else if (studentNumberInput) {
-    Swal.fire({
-      title: 'Incorrect!',
-      text: 'Student number does not match. Cannot delete booking.',
-      icon: 'error',
-      confirmButtonText: 'OK'
-    });
-  }
-}
-
   </script>
 </body>
 </html>
+
