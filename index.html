@@ -197,19 +197,26 @@
     }
 
     async function updateSlots() {
-      await fetchBookedSlots();
-      const selectedDay = daySelect.value;
-      timeSlotSelect.innerHTML = '<option value="">-- Select Slot --</option>';
-      allSlots.forEach(slot => {
-        const key = `${selectedDay}|${slot}`;
-        const count = bookingCounts[key] || 0;
-        if (count < 2) {
-          const opt = document.createElement("option");
-          opt.value = slot;
-          opt.textContent = slot;
-          timeSlotSelect.appendChild(opt);
-        }
-      });
+  await fetchBookedSlots();
+  const selectedDay = daySelect.value;
+
+  // Keep the original options
+  const originalOptions = Array.from(timeSlotSelect.querySelectorAll("option"))
+    .filter(option => option.value !== "");
+
+  timeSlotSelect.innerHTML = '<option value="">-- Select Slot --</option>';
+
+  originalOptions.forEach(option => {
+    const slot = option.value;
+    const key = `${selectedDay}|${slot}`;
+    const count = bookingCounts[key] || 0;
+    if (count < 2) {
+      const opt = document.createElement("option");
+      opt.value = slot;
+      opt.textContent = slot;
+      timeSlotSelect.appendChild(opt);
+    }
+  });
     }
 
     daySelect.addEventListener("change", updateSlots);
