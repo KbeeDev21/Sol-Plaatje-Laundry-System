@@ -10,16 +10,25 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
   <title>Laundry Booking System</title>
   <style>
-   body {
-  font-family: Arial;
-  padding: 20px;
-  background: url('IMG_6244.JPEG') no-repeat center center;
-  background-attachment: scroll; /* or remove it */
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  height: 100vh;
+   html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
+
+body {
+  font-family: Arial;
+  background: url('IMG_6244.JPEG') no-repeat center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+@media (max-width: 768px) {
+  body {
+    background-attachment: scroll;
+  }
+}
+
 
    label{
     color: white;
