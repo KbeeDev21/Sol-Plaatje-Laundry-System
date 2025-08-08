@@ -254,6 +254,15 @@ body {
     document.getElementById("bookingForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
+    if (!timeSlotSelect.value) {
+        Swal.fire({
+          title: 'Invalid',
+          text: 'Please select a time slot before booking.',
+          icon: 'warning',
+        });
+        return;
+      }
+
       const studentNumberInput = document.getElementById("studentNumber").value.trim();
 
       // Show loading indicator
@@ -458,4 +467,5 @@ body {
      crossorigin="anonymous"></script>
 </body>
 </html>
+
 
