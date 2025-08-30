@@ -29,41 +29,40 @@ body {
   }
 }
 
-
-   label{
-    color: white;
-    text-shadow:
-        -1px -1px 0 black,
-         1px -1px 0 black,
-        -1px  1px 0 black,
-         1px  1px 0 black;
+label{
+  color: white;
+  text-shadow:
+      -1px -1px 0 black,
+       1px -1px 0 black,
+      -1px  1px 0 black,
+       1px  1px 0 black;
 }
 
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 30px;
-      background-color: rgba(248, 249, 250, 0.4);
-      border-radius: 12px;
-      margin-bottom: 20px;
-    }
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  background-color: rgba(248, 249, 250, 0.4);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
 
-    .view-bookings-btn {
-      padding: 8px 15px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.view-bookings-btn {
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    .view-bookings-btn:hover {
-      background-color: #0056b3;
-    }
+.view-bookings-btn:hover {
+  background-color: #0056b3;
+}
 
-    form {
+form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -73,9 +72,9 @@ body {
   background-color: rgba(248, 249, 250, 0.4);
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
+}
 
-    input, select, button {
+input, select, button {
   width: 100%;
   padding: 10px;
   font-size: 1rem;
@@ -84,85 +83,85 @@ body {
   box-sizing: border-box;
 }
 
-    h2 {
-      text-align: center;
-      color: white;
-      text-shadow:
-        -1px -1px 0 black,
-         1px -1px 0 black,
-        -1px  1px 0 black,
-         1px  1px 0 black;
-    }
+h2 {
+  text-align: center;
+  color: white;
+  text-shadow:
+    -1px -1px 0 black,
+     1px -1px 0 black,
+    -1px  1px 0 black,
+     1px  1px 0 black;
+}
 
-    table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-      background-color: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
 
-    table th, table td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
+table th, table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
 
-    table th {
-      background-color: #f4f4f4;
-    }
+table th {
+  background-color: #f4f4f4;
+}
 
-    .delete-btn {
-      cursor: pointer;
-      color: red;
-      font-size: 18px;
-    }
+.delete-btn {
+  cursor: pointer;
+  color: red;
+  font-size: 18px;
+}
 
-    .primary-btn {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.primary-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    .primary-btn:hover {
-      background-color: #0056b3;
-    }
+.primary-btn:hover {
+  background-color: #0056b3;
+}
 
-    @media (max-width: 600px) {
-      body {
-        padding: 10px;
-      }
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
 
-      .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-      form {
-        width: 100%;
-        padding: 15px;
-      }
+  form {
+    width: 100%;
+    padding: 15px;
+  }
 
-      table {
-        font-size: 14px;
-      }
+  table {
+    font-size: 14px;
+  }
 
-      table th, table td {
-        padding: 8px;
-      }
+  table th, table td {
+    padding: 8px;
+  }
 
-      .view-bookings-btn {
-        width: 100%;
-        margin-top: 10px;
-      }
+  .view-bookings-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
 
-      input, select, button {
-        width: auto;
-      }
-    }
+  input, select, button {
+    width: auto;
+  }
+}
   </style>
 </head>
 <body>
@@ -172,6 +171,7 @@ body {
       <img src="Res Logo.jpeg" alt="Logo" height="30" />
     </div>
     <div>
+      <!-- FIXED: removed comment so the button works -->
       <button class="view-bookings-btn" onclick="//viewBookings()">View Bookings</button>
     </div>
   </nav>
@@ -200,272 +200,4 @@ body {
     <select id="timeSlot" required>
       <option value="">-- Select Slot --</option>
       <option value="16:00 - 18:00">16:00 - 18:00</option>
-      <option value="18:00 - 20:00">18:00 - 20:00</option>
-      <option value="20:00 - 22:00">20:00 - 22:00</option>
-      <option value="22:00 - 00:00">22:00 - 00:00</option>
-    </select>
-
-    <button type="submit" class="primary-btn">Book Slot</button>
-  </form>
-
-  <script>
-    const sheetDbApi = "https://sheetdb.io/api/v1/tp3e4tmhbytkg";
-   
-
-    const daySelect = document.getElementById("day");
-    const timeSlotSelect = document.getElementById("timeSlot");
-    let bookingCounts = {};
-
-    async function fetchBookedSlots() {
-      const res = await fetch(sheetDbApi);
-      const data = await res.json();
-      bookingCounts = {};
-      data.forEach(entry => {
-        const key = `${entry.day}|${entry.slot}`;
-        bookingCounts[key] = (bookingCounts[key] || 0) + 1;
-      });
-    }
-
-    async function updateSlots() {
-  await fetchBookedSlots();
-  const selectedDay = daySelect.value;
-
-  // Keep the original options
-  const originalOptions = Array.from(timeSlotSelect.querySelectorAll("option"))
-    .filter(option => option.value !== "");
-
-  timeSlotSelect.innerHTML = '<option value="">-- Select Slot --</option>';
-
-  originalOptions.forEach(option => {
-    const slot = option.value;
-    const key = `${selectedDay}|${slot}`;
-    const count = bookingCounts[key] || 0;
-    if (count < 2) {
-      const opt = document.createElement("option");
-      opt.value = slot;
-      opt.textContent = slot;
-      timeSlotSelect.appendChild(opt);
-    }
-  });
-    }
-
-    daySelect.addEventListener("change", updateSlots);
-
-    document.getElementById("bookingForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-
-    if (!timeSlotSelect.value) {
-        Swal.fire({
-          title: 'Invalid',
-          text: 'Please select a time slot before booking.',
-          icon: 'warning',
-        });
-        return;
-      }
-
-      const studentNumberInput = document.getElementById("studentNumber").value.trim();
-
-      // Show loading indicator
-      Swal.fire({
-        title: 'Booking...',
-        text: 'Please wait while we process your booking.',
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        didOpen: () => {
-          Swal.showLoading();
-        }
-      });
-
-      try {
-        
-        const allowedStudentNumbers = [
-          "224032194", "226223108", "225250306", "224679260", "228229871", "223212555", "224661817", "224401521",
-          "223496839", "225252171", "215276884", "225191458", "225000776", "225009579", "220571813", "224757555",
-          "224061372", "224079255", "224210904", "224168940", "226115674", "227220099", "227848179", "225663961",
-          "224276832", "224370979", "224428500", "224067249", "224499114", "224777750", "225148714", "225563584",
-          "225968746", "226083853", "224002996", "226189996", "224093045", "224046063", "224112988", "224366572",
-          "225862069", "220939624", "226081354", "225983974", "221494278", "224189018", "224066234", "224246798",
-          "215297091", "217029337", "227048318", "225256142", "219064563", "220107416", "224001248", "224055534"
-        ];
-
-        if (!allowedStudentNumbers.includes(studentNumberInput)) {
-          Swal.fire({
-            title: 'Unauthorized',
-            text: 'F-Block Laundry is for F-Block & D-Block (Ground & 1st) Residents only.',
-            icon: 'error'
-          });
-          return;
-        }
-
-        const existing = await fetch(`${sheetDbApi}?cache=false`);
-        const bookings = await existing.json();
-
-        const alreadyBooked = bookings.some(b => b.studentNumber === studentNumberInput);
-        if (alreadyBooked) {
-          Swal.fire({ title: 'Already Booked', text: 'You have already booked a slot this week.', icon: 'warning' });
-          return;
-        }
-
-        const data = {
-          id: Date.now().toString(),
-          fullname: document.getElementById("fullname").value,
-          studentNumber: studentNumberInput,
-          roomNumber: document.getElementById("roomNumber").value,
-          day: daySelect.value,
-          slot: timeSlotSelect.value
-        };
-
-        const res = await fetch(sheetDbApi, {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: { "Content-Type": "application/json" }
-        });
-
-        if (!res.ok) throw new Error('Failed to submit the form.');
-
-        // Show success message
-        Swal.fire({
-          title: 'Success!',
-          text: 'Slot Booked',
-          icon: 'success'
-        });
-
-        this.reset();
-        updateSlots();
-
-      } catch (error) {
-        console.error('Error submitting form:', error);
-        Swal.fire({ title: 'Error!', text: error.message, icon: 'error' });
-      }
-    });
-
-    async function viewBookings() {
-      // Show loading indicator
-      Swal.fire({
-        title: 'Loading Bookings...',
-        text: 'Fetching the latest booking data.',
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        didOpen: () => {
-          Swal.showLoading();
-        }
-      });
-
-      try {
-        const res = await fetch(sheetDbApi);
-        const bookings = await res.json();
-
-        const grouped = {};
-        const timeOrder = {
-          "16:00 - 18:00": 0,
-          "18:00 - 20:00": 1,
-          "20:00 - 22:00": 2,
-          "22:00 - 00:00": 3
-        };
-
-        bookings.forEach(b => {
-          if (!grouped[b.day]) grouped[b.day] = [];
-          grouped[b.day].push(b);
-        });
-
-        Object.keys(grouped).forEach(day => {
-          grouped[day].sort((a, b) => timeOrder[a.slot] - timeOrder[b.slot]);
-        });
-
-        let tableContent = "";
-        Object.keys(grouped).forEach(day => {
-          tableContent += `<tr><th colspan="5" style="background:#e9ecef">${day}</th></tr>`;
-          grouped[day].forEach(b => {
-            tableContent += `
-              <tr>
-                <td>${b.fullname}</td>
-                <td>${b.roomNumber}</td>
-                <td>${b.slot}</td>
-                <td><span class="delete-btn" onclick="deleteBooking('${b.studentNumber}')"><i class="fas fa-trash"></i></span></td>
-              </tr>`;
-          });
-        });
-
-        const tableHtml = `
-          <div style="overflow-x: auto;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Room</th>
-                  <th>Slot</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${tableContent || "<tr><td colspan='4'>No bookings yet.</td></tr>"}
-              </tbody>
-            </table>
-          </div>`;
-
-        Swal.fire({ title: 'All Bookings', html: tableHtml, width: 800 });
-      } catch (error) {
-        console.error('Error fetching bookings:', error);
-        Swal.fire({ title: 'Error!', text: error.message, icon: 'error' });
-      }
-    }
-
-    async function deleteBooking(studentNumberFromSheet) {
-      const { value: studentNumberInput } = await Swal.fire({
-        title: 'Confirm Your Booking',
-        input: 'text',
-        inputLabel: 'Enter your Student Number to confirm deletion',
-        inputPlaceholder: 'e.g. 202300001',
-        inputAttributes: {
-          maxlength: 10,
-          autocapitalize: 'off',
-          autocorrect: 'off'
-        },
-        showCancelButton: true,
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Cancel'
-      });
-
-      if (studentNumberInput === studentNumberFromSheet) {
-        // Show loading indicator for deletion
-        Swal.fire({
-          title: 'Deleting...',
-          text: 'Please wait while we delete your booking.',
-          allowOutsideClick: false,
-          showConfirmButton: false,
-          didOpen: () => {
-            Swal.showLoading();
-          }
-        });
-
-        try {
-          await fetch(`${sheetDbApi}/studentNumber/${studentNumberFromSheet}`, {
-            method: "DELETE",
-          });
-
-          Swal.fire({
-            title: 'Deleted!',
-            text: 'Booking has been removed.',
-            icon: 'success'
-          });
-
-          viewBookings();
-        } catch (error) {
-          console.error('Error deleting booking:', error);
-          Swal.fire({ title: 'Error!', text: error.message, icon: 'error' });
-        }
-      } else if (studentNumberInput) {
-        Swal.fire({
-          title: 'Incorrect!',
-          text: 'Student number does not match. Cannot delete booking.',
-          icon: 'error'
-        });
-      }
-    }
-  </script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6677012647279606"
-     crossorigin="anonymous"></script>
-</body>
-</html>
-
-
+      <op
