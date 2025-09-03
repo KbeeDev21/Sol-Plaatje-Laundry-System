@@ -173,10 +173,16 @@ async function deleteBooking(id, studentNumber){
   });
 
   if(confirmNumber !== studentNumber){
-    Swal.fire({ title:'Error', text:'Student number does not match.', icon:'error' });
-    return;
+  Swal.fire({ 
+    title:'Error', 
+    text:'Student number does not match.', 
+    icon:'error' 
+  }).then(() => {
+    bookingFormContainer.style.display = "block"; // show form again after OK
+  });
+  return;
   }
-
+  bookingFormContainer.style.display = "Block";
   try {
     await supabase.from("bookings").delete().eq("id", id).eq("student_number", studentNumber);
     Swal.fire({ title:'Deleted', text:'Booking removed.', icon:'success' });
